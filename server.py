@@ -42,10 +42,11 @@ class Battlesnake(object):
         # Valid moves are "up", "down", "left", or "right".
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
-
+        startdir = calculateStartingDirection(data)
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
-        move = random.choice(possible_moves)
+        #move = random.choice(possible_moves)
+        move = startdir
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -60,6 +61,30 @@ class Battlesnake(object):
         print("END")
         return "ok"
 
+    def calculateClosestFood(self, data):
+        gameId = data.game.id
+        food = data.board.food
+        myhead = data.board.you.head
+        mytail = data.board.you.body[-1]
+
+    def calculateStartingDirection(self, data):
+        head = data.board.you.head
+        tail = data.board.you.body[-1]
+        xdiff = head.x - tail.x
+        if xdiff > 0:
+            return "right"
+        elif xdiff < 0:
+            return "left"
+        elif xdiff == 0:
+            ydiff = head.y - tail.y
+            if ydiff > 0:
+                return "up"
+            else:
+                return "down"
+
+
+        
+        
 
 if __name__ == "__main__":
     server = Battlesnake()
