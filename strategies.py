@@ -1,3 +1,5 @@
+import global_variables
+
 
 def convert_coords_to_direction(current_head, x, y):
 
@@ -43,4 +45,3 @@ def avoid_walls(head, move):
         result = True
     
     return result
-    
