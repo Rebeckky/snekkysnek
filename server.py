@@ -69,14 +69,6 @@ class Battlesnake(object):
         print("END")
         return "ok"
 
-'''
-    def calculateClosestFood(self, data):
-        gameId = data["game"]["id]"
-        food = data["board"]["food"]
-        myhead = data["board"]["you"]["head"]
-        mytail = data["board"]["you"]["body"][-1]
-'''
-
     def calculateStartingDirection(self, data):
         head = data["board"]["you"]["head"]
         tail = data["board"]["you"]["body"][-1]

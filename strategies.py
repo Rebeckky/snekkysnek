@@ -43,3 +43,4 @@ def avoid_walls(head, move):
         result = True
     
     return result
+    
