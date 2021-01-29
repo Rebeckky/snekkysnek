@@ -1,5 +1,7 @@
 import os
 import random
+import global_variables
+import strategies
 
 import cherrypy
 
@@ -30,7 +32,9 @@ class Battlesnake(object):
         # This function is called everytime your snake is entered into a game.
         # cherrypy.request.json contains information about the game that's about to be played.
         data = cherrypy.request.json
-
+        print(data)
+        global_variables.BOARD_MAXIMUM_X = data["board"]["width"] - 1
+        global_variables.BOARD_MAXIMUM_Y = data["board"]["height"] - 1
         print("START")
         return "ok"
 
@@ -42,11 +46,15 @@ class Battlesnake(object):
         # Valid moves are "up", "down", "left", or "right".
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
-        startdir = calculateStartingDirection(data)
+        #startdir = calculateStartingDirection(data)
+        current_head = data["you"]["head"]
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
-        #move = random.choice(possible_moves)
-        move = startdir
+        move = random.choice(possible_moves)
+        #move = startdir
+        
+        while strategies.avoid_walls(current_head, move) is not True:
+            move = random.choice(possible_moves)
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -61,22 +69,24 @@ class Battlesnake(object):
         print("END")
         return "ok"
 
+'''
     def calculateClosestFood(self, data):
-        gameId = data.game.id
-        food = data.board.food
-        myhead = data.board.you.head
-        mytail = data.board.you.body[-1]
+        gameId = data["game"]["id]"
+        food = data["board"]["food"]
+        myhead = data["board"]["you"]["head"]
+        mytail = data["board"]["you"]["body"][-1]
+'''
 
     def calculateStartingDirection(self, data):
-        head = data.board.you.head
-        tail = data.board.you.body[-1]
-        xdiff = head.x - tail.x
+        head = data["board"]["you"]["head"]
+        tail = data["board"]["you"]["body"][-1]
+        xdiff = head["x"] - tail["x"]
         if xdiff > 0:
             return "right"
         elif xdiff < 0:
             return "left"
         elif xdiff == 0:
-            ydiff = head.y - tail.y
+            ydiff = head["y"] - tail["y"]
             if ydiff > 0:
                 return "up"
             else:
