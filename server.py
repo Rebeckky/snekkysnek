@@ -48,13 +48,16 @@ class Battlesnake(object):
         data = cherrypy.request.json
         #startdir = calculateStartingDirection(data)
         current_head = data["you"]["head"]
+        current_body = data["you"]["body"]
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         move = random.choice(possible_moves)
+        move_coords = strategies.convert_direction_to_coords(current_head, move)
         #move = startdir
         
-        while strategies.avoid_walls(current_head, move) is not True:
+        while strategies.safe_move(move_coords, current_body) is not True:
             move = random.choice(possible_moves)
+            move_coords = strategies.convert_direction_to_coords(current_head, move)
 
         print(f"MOVE: {move}")
         return {"move": move}
