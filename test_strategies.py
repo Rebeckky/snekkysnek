@@ -38,6 +38,23 @@ data = {
                 "shout": "why are we shouting??",
                 "squad": ""
             },
+                        {
+                "id": "snake-508e96ac-94ad-1639-be12",
+                "name": "Snaaaaake",
+                "health": 54,
+                "body": [
+                        {"x": 2, "y": 3},
+                        {"x": 2, "y": 2},
+                        {"x": 2, "y": 1},
+                        {"x": 1, "y": 1},
+                        {"x": 0, "y": 1}
+                ],
+                "latency": "111",
+                "head": {"x": 2, "y": 3},
+                "length": 5,
+                "shout": "why are we shouting??",
+                "squad": ""
+            },
             {
                 "id": "snake-b67f4906-94ae-11ea-bb37",
                 "name": "Another Snake",
@@ -155,6 +172,18 @@ def test_avoid_self_move_down():
         current_head, next_move)
     isSelfAvoided = strategies.avoid_self(move_coords, current_body)
     assert isSelfAvoided == True
+
+def test_avoid_snakes():
+    current_head = data["you"]["head"]
+    all_snakes = []
+    current_snakes = data["board"]["snakes"]
+    for snake in current_snakes:
+        for body_coord in snake["body"]:
+            all_snakes.append(body_coord)
+    next_move = "up"
+    move_coords = strategies.convert_direction_to_coords(current_head, next_move)
+    isSnakesAvoided = strategies.avoid_self(move_coords, all_snakes)
+    assert isSnakesAvoided == False
 
 
 def test_avoid_self_long_body_move_right():

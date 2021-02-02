@@ -47,10 +47,10 @@ def avoid_walls(move_coords):
     return result
 
 
-def avoid_self(move_coords, body_coords):
+def avoid_snake(move_coords, body_coords):
     
     """ return true if the move will avoid colliding with
-        my own body
+        myself or other snakes
     """
     if move_coords in body_coords:
         result = False
@@ -62,11 +62,20 @@ def avoid_self(move_coords, body_coords):
 def safe_move(move_coords, body_coords):
     """ return true if the grid coords are
         safe to move to, ie avoid walls and 
-        myself
+        myself/other snakes
     """
-    if avoid_walls(move_coords) and avoid_self(move_coords, body_coords):
+    if avoid_walls(move_coords) and avoid_snake(move_coords, body_coords):
         result = True
     else:
         result = False
 
     return result
+
+def update_snake_loc_data(data):
+    current_snakes = data["board"]["snakes"]
+    all_snake_bodies = []
+    for snake in current_snakes:
+        for body_coord in snake["body"]:
+            all_snake_bodies.append(body_coord)
+
+    return all_snake_bodies
