@@ -46,19 +46,13 @@ class Battlesnake(object):
         # Valid moves are "up", "down", "left", or "right".
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
-        #startdir = calculateStartingDirection(data)
-        current_head = data["you"]["head"]
-        current_body = data["you"]["body"]
-        all_snake_bodies = strategies.update_snake_loc_data(data)
+
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         move = random.choice(possible_moves)
-        move_coords = strategies.convert_direction_to_coords(current_head, move)
-        #move = startdir
         
-        while strategies.safe_move(move_coords, all_snake_bodies) is not True:
+        while strategies.safe_move(move, data) is not True:
             move = random.choice(possible_moves)
-            move_coords = strategies.convert_direction_to_coords(current_head, move)
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -72,24 +66,6 @@ class Battlesnake(object):
 
         print("END")
         return "ok"
-
-    def calculateStartingDirection(self, data):
-        head = data["board"]["you"]["head"]
-        tail = data["board"]["you"]["body"][-1]
-        xdiff = head["x"] - tail["x"]
-        if xdiff > 0:
-            return "right"
-        elif xdiff < 0:
-            return "left"
-        elif xdiff == 0:
-            ydiff = head["y"] - tail["y"]
-            if ydiff > 0:
-                return "up"
-            else:
-                return "down"
-
-
-        
         
 
 if __name__ == "__main__":

@@ -67,22 +67,25 @@ def avoid_snake(move_coords, body_coords):
     
     return result
 
-def safe_move(move_coords, body_coords):
+def safe_move(move, data):
     """ return true if the grid coords are
         safe to move to, ie avoid walls and 
         myself/other snakes
     """
-    if avoid_walls(move_coords) and avoid_snake(move_coords, body_coords) and avoid_head_to_head_collision(move_coords, body_coords):
+    current_head = data["you"]["head"]
+    snakes = data["board"]["snakes"]
+    all_snake_bodies = update_snake_loc_data(snakes)
+    move_coords = convert_direction_to_coords(current_head, move)
+    if avoid_walls(move_coords) and avoid_snake(move_coords, all_snake_bodies) and avoid_head_to_head_collision(move_coords, snakes):
         result = True
     else:
         result = False
 
     return result
 
-def update_snake_loc_data(data):
-    current_snakes = data["board"]["snakes"]
+def update_snake_loc_data(snakes):
     all_snake_bodies = []
-    for snake in current_snakes:
+    for snake in snakes:
         all_snake_bodies.append(snake["body"])
 
     return all_snake_bodies

@@ -176,7 +176,7 @@ def test_avoid_snake_move_down():
 
 def test_avoid_snakes():
     current_head = data["you"]["head"]
-    all_snakes = strategies.update_snake_loc_data(data)
+    all_snakes = strategies.update_snake_loc_data(data["board"]["snakes"])
 
     next_move = "up"
     move_coords = strategies.convert_direction_to_coords(
@@ -236,38 +236,81 @@ def test_avoid_snake_long_body_move_left():
 
 
 def test_safe_move_short_body():
-    my_head = {"x": 0, "y": 1}
-    snake = {
-        "body":
-        [
-            {"x": 0, "y": 1},
-            {"x": 0, "y": 0},
-            {"x": 1, "y": 0},
-            {"x": 1, "y": 1}
-        ]
+    test_data = {
+        "you": {
+            "head": {"x": 4, "y": 4}
+        },
+        "board": {
+            "snakes": [
+                {
+                    "id": "snake-508e96ac-94ad-11ea-bb37",
+                    "name": "My Snake",
+                            "health": 54,
+                            "body": [
+                                {"x": 4, "y": 4},
+                                {"x": 4, "y": 3},
+                                {"x": 4, "y": 2}
+                            ],
+                    "latency": "111",
+                    "head": {"x": 4, "y": 4},
+                    "length": 3,
+                    "shout": "why are we shouting??",
+                    "squad": ""
+                },
+                {
+                    "id": "snake-508e96ac-94ad-1639-be12",
+                    "name": "Snaaaaake",
+                    "health": 54,
+                    "body": [
+                        {"x": 3, "y": 3},
+                        {"x": 2, "y": 3},
+                        {"x": 2, "y": 2},
+                        {"x": 2, "y": 1},
+                        {"x": 1, "y": 1},
+                        {"x": 0, "y": 1}
+                    ],
+                    "latency": "111",
+                    "head": {"x": 3, "y": 3},
+                    "length": 6,
+                    "shout": "why are we shouting??",
+                    "squad": ""
+                },
+                {
+                    "id": "snake-508e96ac-94ad-11ea-bb37",
+                    "name": "Snek 3",
+                            "health": 54,
+                            "body": [
+                                {"x": 5, "y": 4},
+                                {"x": 5, "y": 3},
+                                {"x": 6, "y": 3},
+                                {"x": 6, "y": 2}
+                            ],
+                    "latency": "111",
+                    "head": {"x": 5, "y": 4},
+                    "length": 4,
+                    "shout": "why are we shouting??",
+                    "squad": ""
+                }
+            ],
+            "game": {}
+        }
     }
-    current_body = snake["body"]
-    next_move = "left"  # into wall
-    move_coords = strategies.convert_direction_to_coords(
-        my_head, next_move)
-    isSafeMove = strategies.safe_move(move_coords, current_body)
+
+    next_move = "left"  # possible head-to-head collision
+    isSafeMove = strategies.safe_move(next_move, test_data)
     assert isSafeMove == False
-    next_move = "right"  # into self
-    move_coords = strategies.convert_direction_to_coords(
-        my_head, next_move)
-    isSafeMove = strategies.safe_move(move_coords, current_body)
+    next_move = "right"  # possible snake collision
+
+    isSafeMove = strategies.safe_move(next_move, test_data)
     assert isSafeMove == False
     next_move = "down"  # into self
-    move_coords = strategies.convert_direction_to_coords(
-        my_head, next_move)
-    isSafeMove = strategies.safe_move(move_coords, current_body)
+
+    isSafeMove = strategies.safe_move(next_move, test_data)
     assert isSafeMove == False
     next_move = "up"  # open grid location
-    move_coords = strategies.convert_direction_to_coords(
-        my_head, next_move)
-    isSafeMove = strategies.safe_move(move_coords, current_body)
-    assert isSafeMove == True
 
+    isSafeMove = strategies.safe_move(next_move, test_data)
+    assert isSafeMove == True
 
 def test_avoid_head_to_head_collision_unsafe_move():
     my_head = {"x": 3, "y": 4}
