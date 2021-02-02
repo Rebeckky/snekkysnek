@@ -52,10 +52,18 @@ def avoid_snake(move_coords, body_coords):
     """ return true if the move will avoid colliding with
         myself or other snakes
     """
-    if move_coords in body_coords:
-        result = False
-    else:
-        result = True
+    if type(body_coords[0]) == dict:
+        for coord in body_coords:
+            if move_coords == coord:
+                return False
+            else:
+                result = True
+    else: 
+        for body in body_coords:
+            if move_coords in body:
+                return False
+            else:
+                result = True
     
     return result
 
@@ -64,7 +72,7 @@ def safe_move(move_coords, body_coords):
         safe to move to, ie avoid walls and 
         myself/other snakes
     """
-    if avoid_walls(move_coords) and avoid_snake(move_coords, body_coords):
+    if avoid_walls(move_coords) and avoid_snake(move_coords, body_coords) and avoid_head_to_head_collision(move_coords, body_coords):
         result = True
     else:
         result = False
@@ -75,7 +83,24 @@ def update_snake_loc_data(data):
     current_snakes = data["board"]["snakes"]
     all_snake_bodies = []
     for snake in current_snakes:
-        for body_coord in snake["body"]:
-            all_snake_bodies.append(body_coord)
+        all_snake_bodies.append(snake["body"])
 
     return all_snake_bodies
+
+
+def avoid_head_to_head_collision(next_move, current_snakes):
+    snakes = copy.deepcopy(current_snakes)
+    snakes.pop(0)
+    for snake in snakes:
+        if (next_move["x"] + 1) == (snake["body"][0]["x"] + 1):
+            return False
+        elif (next_move["x"] - 1) == (snake["body"][0]["x"] - 1):
+            return False
+        elif (next_move["y"] + 1) == (snake["body"][0]["y"] + 1):
+            return False
+        elif (next_move["y"] - 1) == (snake["body"][0]["y"] - 1):
+            return False
+        else:
+            result = True
+    
+    return result
