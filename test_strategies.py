@@ -134,43 +134,43 @@ def test_avoid_walls_direction_right():
     assert isWallAvoided == True
 
 
-def test_avoid_self_move_right():
+def test_avoid_snake_move_right():
     current_head = data["you"]["head"]
     current_body = data["you"]["body"]
     next_move = "right"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == False
 
 
-def test_avoid_self_move_left():
+def test_avoid_snake_move_left():
     current_head = data["you"]["head"]
     current_body = data["you"]["body"]
     next_move = "left"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == True
 
 
-def test_avoid_self_move_up():
+def test_avoid_snake_move_up():
     current_head = data["you"]["head"]
     current_body = data["you"]["body"]
     next_move = "up"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == True
 
 
-def test_avoid_self_move_down():
+def test_avoid_snake_move_down():
     current_head = data["you"]["head"]
     current_body = data["you"]["body"]
     next_move = "down"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == True
 
 def test_avoid_snakes():
@@ -182,11 +182,11 @@ def test_avoid_snakes():
             all_snakes.append(body_coord)
     next_move = "up"
     move_coords = strategies.convert_direction_to_coords(current_head, next_move)
-    isSnakesAvoided = strategies.avoid_self(move_coords, all_snakes)
+    isSnakesAvoided = strategies.avoid_snake(move_coords, all_snakes)
     assert isSnakesAvoided == False
 
 
-def test_avoid_self_long_body_move_right():
+def test_avoid_snake_long_body_move_right():
     current_head = {"x": 3, "y": 2}
     snake = {
         "body":
@@ -207,11 +207,11 @@ def test_avoid_self_long_body_move_right():
     next_move = "right"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == False
 
 
-def test_avoid_self_long_body_move_left():
+def test_avoid_snake_long_body_move_left():
     current_head = {"x": 3, "y": 2}
     snake = {
         "body":
@@ -232,7 +232,7 @@ def test_avoid_self_long_body_move_left():
     next_move = "left"
     move_coords = strategies.convert_direction_to_coords(
         current_head, next_move)
-    isSelfAvoided = strategies.avoid_self(move_coords, current_body)
+    isSelfAvoided = strategies.avoid_snake(move_coords, current_body)
     assert isSelfAvoided == True
 
 def test_safe_move_short_body():
