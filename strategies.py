@@ -93,9 +93,12 @@ def update_snake_loc_data(snakes):
 
 def avoid_head_to_head_collision(next_move, current_snakes):
     snakes = copy.deepcopy(current_snakes)
-    snakes.pop(0)
+    my_snake = snakes.pop(0)
     for snake in snakes:
         snake_head = snake["head"]
+        snake_length = snake["length"]
+        if my_snake["length"] > snake["length"]:
+            return True
         if (next_move["x"] + 1) == (snake_head["x"] + 1):
             return False
         elif (next_move["x"] - 1) == (snake_head["x"] - 1):
