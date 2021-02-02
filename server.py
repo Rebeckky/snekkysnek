@@ -49,7 +49,7 @@ class Battlesnake(object):
         #startdir = calculateStartingDirection(data)
         current_head = data["you"]["head"]
         current_body = data["you"]["body"]
-        all_snake_bodies = update_snake_loc_data(data)
+        all_snake_bodies = strategies.update_snake_loc_data(data)
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         move = random.choice(possible_moves)
