@@ -56,7 +56,7 @@ class Battlesnake(object):
         move_coords = strategies.convert_direction_to_coords(current_head, move)
         #move = startdir
         
-        while strategies.safe_move(move_coords, current_body) is not True:
+        while strategies.safe_move(move_coords, all_snake_bodies) is not True:
             move = random.choice(possible_moves)
             move_coords = strategies.convert_direction_to_coords(current_head, move)
 

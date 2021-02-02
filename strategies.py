@@ -19,7 +19,7 @@ def convert_coords_to_direction(current_head, x, y):
 def convert_direction_to_coords(current_head, next_move):
 
     future_head = copy.deepcopy(current_head)
-    print(f"before move: {future_head}")
+
     if next_move == "right":
         future_head["x"] = current_head["x"] + 1
     elif next_move == "left":
