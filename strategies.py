@@ -104,7 +104,5 @@ def avoid_head_to_head_collision(next_move, current_snakes):
             return False
         elif (next_move["y"] - 1) == (snake_head["y"] - 1):
             return False
-        else:
-            result = True
     
-    return result
+    return True
