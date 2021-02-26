@@ -20,8 +20,8 @@ class Battlesnake(object):
         # TIP: If you open your Battlesnake URL in browser you should see this data
         return {
             "apiversion": "1",
-            "author": "rebeckky&ladyelle",
-            "color": "#3f0654",
+            "author": "rebeckky",
+            "color": "#fc8721", # I'm orange!
             "head": "silly",
             "tail": "hook",
         }
@@ -32,6 +32,7 @@ class Battlesnake(object):
         # This function is called everytime your snake is entered into a game.
         # cherrypy.request.json contains information about the game that's about to be played.
         data = cherrypy.request.json
+        game_id = data['game']['id']
         print(data)
         global_variables.BOARD_MAXIMUM_X = data["board"]["width"] - 1
         global_variables.BOARD_MAXIMUM_Y = data["board"]["height"] - 1

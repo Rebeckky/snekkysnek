@@ -2,20 +2,6 @@ import global_variables
 import copy
 
 
-def convert_coords_to_direction(current_head, x, y):
-
-    if x - current_head["x"] > 0:
-        result = "right"
-    elif x - current_head["x"] < 0:
-        result = "down" # TODO: check logic
-    else:
-        if y - current_head["y"] > 0:
-            result = "up"
-        else:
-            result = "down"
-    
-    return result
-
 def convert_direction_to_coords(current_head, next_move):
 
     future_head = copy.deepcopy(current_head)
@@ -33,9 +19,8 @@ def convert_direction_to_coords(current_head, next_move):
 
 
 def avoid_walls(move_coords):
-    ''' Return true if the move coords will avoid hitting
-        a wall, false if it will cause the snake to hit the wall
-    '''
+    # Return true if the move coords will avoid hitting
+    # a wall, false if it will cause the snake to hit the wall
 
     if move_coords["x"] < 0 or move_coords["y"] < 0:
         result = False
@@ -47,18 +32,19 @@ def avoid_walls(move_coords):
     return result
 
 
-def avoid_snake(move_coords, body_coords):
-    
-    """ return true if the move will avoid colliding with
-        myself or other snakes
-    """
+def avoid_snake(move_coords, body_coords): 
+    # return true if the move will avoid colliding with
+    # myself or other snakes
+
     if type(body_coords[0]) == dict:
+        # Only one snake is on the board
         for coord in body_coords:
             if move_coords == coord:
                 return False
             else:
                 result = True
-    else: 
+    else:
+        # Multiple snakes on the board
         for body in body_coords:
             if move_coords in body:
                 return False
@@ -68,13 +54,12 @@ def avoid_snake(move_coords, body_coords):
     return result
 
 def safe_move(move, data):
-    """ return true if the grid coords are
-        safe to move to, ie avoid walls and 
-        myself/other snakes
-    """
+    # return true if the grid coords are
+    # safe to move to, ie avoid walls and myself/other snakes
+
     current_head = data["you"]["head"]
     snakes = data["board"]["snakes"]
-    all_snake_bodies = update_snake_loc_data(snakes)
+    all_snake_bodies = get_snake_loc_data(snakes)
     move_coords = convert_direction_to_coords(current_head, move)
     if avoid_walls(move_coords) and avoid_snake(move_coords, all_snake_bodies) and avoid_head_to_head_collision(move_coords, snakes):
         result = True
@@ -83,7 +68,8 @@ def safe_move(move, data):
 
     return result
 
-def update_snake_loc_data(snakes):
+def get_snake_loc_data(snakes):
+    # Only need the body coords for each snake for now
     all_snake_bodies = []
     for snake in snakes:
         all_snake_bodies.append(snake["body"])
@@ -93,10 +79,12 @@ def update_snake_loc_data(snakes):
 
 def avoid_head_to_head_collision(next_move, current_snakes):
     snakes = copy.deepcopy(current_snakes)
+    # Don't compare myself with myself
     my_snake = snakes.pop(0)
     for snake in snakes:
         snake_head = snake["head"]
         snake_length = snake["length"]
+        # Take aggressive action 'cause I'm bigger!
         if my_snake["length"] > snake["length"]:
             return True
         if (next_move["x"] + 1) == (snake_head["x"] + 1):
