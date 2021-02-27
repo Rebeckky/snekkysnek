@@ -56,7 +56,7 @@ class Battlesnake(object):
             cumulative_weights = [100] * 3
             current_move_index = possible_moves.index(move)
             cumulative_weights.insert(current_move_index, 0)
-            move = random.choices(possible_moves, cumulative_weights)
+            move = random.choices(possible_moves, cumulative_weights, k=1)[0]
 
         print(f"MOVE: {move}")
         return {"move": move}
