@@ -1,5 +1,7 @@
 import os
 import random
+import global_variables
+import strategies
 
 import cherrypy
 
@@ -18,8 +20,8 @@ class Battlesnake(object):
         # TIP: If you open your Battlesnake URL in browser you should see this data
         return {
             "apiversion": "1",
-            "author": "rebeckky&ladyelle",
-            "color": "#3f0654",
+            "author": "rebeckky",
+            "color": "#fc8721", # I'm orange!
             "head": "silly",
             "tail": "hook",
         }
@@ -30,7 +32,10 @@ class Battlesnake(object):
         # This function is called everytime your snake is entered into a game.
         # cherrypy.request.json contains information about the game that's about to be played.
         data = cherrypy.request.json
-
+        game_id = data['game']['id']
+        print(data)
+        global_variables.BOARD_MAXIMUM_X = data["board"]["width"] - 1
+        global_variables.BOARD_MAXIMUM_Y = data["board"]["height"] - 1
         print("START")
         return "ok"
 
@@ -46,6 +51,12 @@ class Battlesnake(object):
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         move = random.choice(possible_moves)
+        
+        while strategies.safe_move(move, data) is not True:
+            cumulative_weights = [100] * 3
+            current_move_index = possible_moves.index(move)
+            cumulative_weights.insert(current_move_index, 0)
+            move = random.choices(possible_moves, cumulative_weights, k=1)[0]
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -59,7 +70,7 @@ class Battlesnake(object):
 
         print("END")
         return "ok"
-
+        
 
 if __name__ == "__main__":
     server = Battlesnake()
