@@ -32,7 +32,7 @@ def avoid_walls(move_coords):
     return result
 
 
-def avoid_snake(move_coords, body_coords): 
+def avoid_snakes(move_coords, body_coords): 
     # return true if the move will avoid colliding with
     # myself or other snakes
 
@@ -61,10 +61,10 @@ def safe_move(move, data):
     snakes = data["board"]["snakes"]
     all_snake_bodies = get_snake_loc_data(snakes)
     move_coords = convert_direction_to_coords(current_head, move)
-    if avoid_walls(move_coords) and avoid_snake(move_coords, all_snake_bodies) and avoid_head_to_head_collision(move_coords, snakes):
-        result = True
-    else:
-        result = False
+    result = False
+    if avoid_walls(move_coords) and avoid_snakes(move_coords, all_snake_bodies):
+        if avoid_head_to_head_collision(move_coords, snakes):
+            result = True
 
     return result
 
