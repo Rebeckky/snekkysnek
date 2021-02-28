@@ -33,7 +33,7 @@ class Battlesnake(object):
         # cherrypy.request.json contains information about the game that's about to be played.
         data = cherrypy.request.json
         game_id = data['game']['id']
-        print(data)
+
         global_variables.BOARD_MAXIMUM_X = data["board"]["width"] - 1
         global_variables.BOARD_MAXIMUM_Y = data["board"]["height"] - 1
         print("START")
@@ -51,12 +51,17 @@ class Battlesnake(object):
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         move = random.choice(possible_moves)
-        
-        while strategies.safe_move(move, data) is not True:
-            cumulative_weights = [100] * 3
+        cumulative_weights = [100] * 4
+        count = 0
+        while strategies.safe_move(move, data) is not True and count < 5:
+            # don't choose the same unsafe move as the last one
+            # needs improvement - only puts less weight on the last move
+            # but will retry one already deemed unsafe if was prior to last move
+            
             current_move_index = possible_moves.index(move)
-            cumulative_weights.insert(current_move_index, 0)
+            cumulative_weights[current_move_index] = 1
             move = random.choices(possible_moves, cumulative_weights, k=1)[0]
+            count += 1
 
         print(f"MOVE: {move}")
         return {"move": move}
