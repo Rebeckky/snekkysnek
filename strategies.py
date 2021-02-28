@@ -62,9 +62,8 @@ def safe_move(move, data):
     all_snake_bodies = get_snake_loc_data(snakes)
     move_coords = convert_direction_to_coords(current_head, move)
     result = False
-    if avoid_walls(move_coords) and avoid_snakes(move_coords, all_snake_bodies):
-        if avoid_head_to_head_collision(move_coords, snakes):
-            result = True
+    if avoid_walls(move_coords) and avoid_snakes(move_coords, all_snake_bodies) and avoid_head_to_head_collision(move_coords, snakes):
+        result = True
 
     return result
 
