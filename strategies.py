@@ -61,11 +61,11 @@ def safe_move(move, data):
     snakes = data["board"]["snakes"]
     all_snake_bodies = get_snake_loc_data(snakes)
     move_coords = convert_direction_to_coords(current_head, move)
-    result = False
-    if avoid_walls(move_coords) and avoid_snakes(move_coords, all_snake_bodies) and avoid_head_to_head_collision(move_coords, snakes):
-        result = True
+    
+    return (avoid_walls(move_coords) 
+            and avoid_snakes(move_coords, all_snake_bodies) 
+            and avoid_head_to_head_collision(move_coords, snakes))
 
-    return result
 
 def get_snake_loc_data(snakes):
     # Only need the body coords for each snake for now
@@ -80,19 +80,27 @@ def avoid_head_to_head_collision(next_move, current_snakes):
     snakes = copy.deepcopy(current_snakes)
     # Don't compare myself with myself
     my_snake = snakes.pop(0)
+    my_length = my_snake["length"]
+    result = True
     for snake in snakes:
         snake_head = snake["head"]
         snake_length = snake["length"]
-        # Take aggressive action 'cause I'm bigger!
-        if my_snake["length"] > snake["length"]:
-            return True
-        if (next_move["x"] + 1) == (snake_head["x"] + 1):
-            return False
-        elif (next_move["x"] - 1) == (snake_head["x"] - 1):
-            return False
-        elif (next_move["y"] + 1) == (snake_head["y"] + 1):
-            return False
-        elif (next_move["y"] - 1) == (snake_head["y"] - 1):
-            return False
+
+        snake_head_x_inc = {"x": snake_head["x"] + 1, "y": snake_head["y"]}
+        snake_head_x_dec = {"x": snake_head["x"] - 1, "y": snake_head["y"]}
+        snake_head_y_inc = {"x": snake_head["x"], "y": snake_head["y"] + 1}
+        snake_head_y_dec = {"x": snake_head["x"], "y": snake_head["y"] - 1}
+
+        if (next_move == snake_head_x_inc 
+            or next_move == snake_head_x_dec
+            or next_move == snake_head_y_inc 
+            or next_move == snake_head_y_dec):
+            result = is_my_snake_bigger(my_length, snake_length)
     
-    return True
+    return result
+
+def is_my_snake_bigger(my_snake_length, other_snake_length):
+    if my_snake_length > other_snake_length:
+        return True
+    else:
+        return False
