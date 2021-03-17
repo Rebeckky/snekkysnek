@@ -50,18 +50,13 @@ class Battlesnake(object):
 
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
-        move = random.choice(possible_moves)
-        cumulative_weights = [100] * 4
-        count = 0
-        while strategies.safe_move(move, data) is not True and count < 5:
-            # don't choose the same unsafe move as the last one
-            # needs improvement - only puts less weight on the last move
-            # but will retry one already deemed unsafe if was prior to last move
+        random.shuffle(possible_moves)
+        move = possible_moves.pop(0)
+
+        while strategies.safe_move(move, data) is not True and len(possible_moves) > 0 :
+            # remove tried choices from the list
+            move = possible_moves.pop(0)
             
-            current_move_index = possible_moves.index(move)
-            cumulative_weights[current_move_index] = 1
-            move = random.choices(possible_moves, cumulative_weights, k=1)[0]
-            count += 1
 
         print(f"MOVE: {move}")
         return {"move": move}
