@@ -24,20 +24,24 @@ def avoid_walls(move_coords):
 
     if move_coords["x"] < 0 or move_coords["y"] < 0:
         result = False
-    elif move_coords["x"] > global_variables.BOARD_MAXIMUM_X or move_coords["y"] > global_variables.BOARD_MAXIMUM_Y:
+    elif (
+        move_coords["x"] > global_variables.BOARD_MAXIMUM_X
+        or move_coords["y"] > global_variables.BOARD_MAXIMUM_Y
+    ):
         result = False
     else:
+        print(f"avoid_walls")
         result = True
-    
+
     return result
 
 
-def avoid_snakes(move_coords, body_coords): 
+def avoid_snakes(move_coords, body_coords):
     # return true if the move will avoid colliding with
     # myself or other snakes
 
     if type(body_coords[0]) == dict:
-        # Only one snake is on the board
+        # Only one snake is on the board (me)
         for coord in body_coords:
             if move_coords == coord:
                 return False
@@ -49,9 +53,11 @@ def avoid_snakes(move_coords, body_coords):
             if move_coords in body:
                 return False
             else:
+                print(f"avoid_snake with head at: {body[0]}")
                 result = True
-    
+
     return result
+
 
 def safe_move(move, data):
     # return true if the grid coords are
@@ -61,10 +67,14 @@ def safe_move(move, data):
     snakes = data["board"]["snakes"]
     all_snake_bodies = get_snake_loc_data(snakes)
     move_coords = convert_direction_to_coords(current_head, move)
-    
-    return (avoid_walls(move_coords) 
-            and avoid_snakes(move_coords, all_snake_bodies) 
-            and avoid_head_to_head_collision(move_coords, snakes))
+
+    result = (
+        avoid_walls(move_coords)
+        and avoid_snakes(move_coords, all_snake_bodies)
+        and avoid_head_to_head_collision(move_coords, snakes)
+    )
+    print(f"is safe_move - move: {move}, {result}")
+    return result
 
 
 def get_snake_loc_data(snakes):
@@ -78,9 +88,16 @@ def get_snake_loc_data(snakes):
 
 def avoid_head_to_head_collision(next_move, current_snakes):
     snakes = copy.deepcopy(current_snakes)
-    # Don't compare myself with myself
-    my_snake = snakes.pop(0)
-    my_length = my_snake["length"]
+    # remove myself from the list so I don't compare my snake
+    # with myself
+    my_snake = {}
+    my_length = 0
+    for i in range(len(snakes) - 1):
+        if snakes[i]["id"] == global_variables.MY_SNAKE_ID:
+            my_snake = snakes.pop(i)
+            my_length = my_snake["length"]
+            break
+
     result = True
     for snake in snakes:
         snake_head = snake["head"]
@@ -91,16 +108,23 @@ def avoid_head_to_head_collision(next_move, current_snakes):
         snake_head_y_inc = {"x": snake_head["x"], "y": snake_head["y"] + 1}
         snake_head_y_dec = {"x": snake_head["x"], "y": snake_head["y"] - 1}
 
-        if (next_move == snake_head_x_inc 
+        if (
+            next_move == snake_head_x_inc
             or next_move == snake_head_x_dec
-            or next_move == snake_head_y_inc 
-            or next_move == snake_head_y_dec):
+            or next_move == snake_head_y_inc
+            or next_move == snake_head_y_dec
+        ):
+
             result = is_my_snake_bigger(my_length, snake_length)
-    
+            print(f"avoid_head_collision: {result}, with snake: {snake_head}")
+    print("avoid_head_collision")
     return result
+
 
 def is_my_snake_bigger(my_snake_length, other_snake_length):
     if my_snake_length > other_snake_length:
+        print(f"I'm bigger")
         return True
     else:
+        print(f"I'm smaller or equal")
         return False

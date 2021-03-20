@@ -21,7 +21,7 @@ class Battlesnake(object):
         return {
             "apiversion": "1",
             "author": "rebeckky",
-            "color": "#fc8721", # I'm orange!
+            "color": "#fc8721",  # I'm orange!
             "head": "silly",
             "tail": "hook",
         }
@@ -32,7 +32,8 @@ class Battlesnake(object):
         # This function is called everytime your snake is entered into a game.
         # cherrypy.request.json contains information about the game that's about to be played.
         data = cherrypy.request.json
-        game_id = data['game']['id']
+        game_id = data["game"]["id"]
+        global_variables.MY_SNAKE_ID = data["you"]["id"]
 
         global_variables.BOARD_MAXIMUM_X = data["board"]["width"] - 1
         global_variables.BOARD_MAXIMUM_Y = data["board"]["height"] - 1
@@ -47,16 +48,15 @@ class Battlesnake(object):
         # Valid moves are "up", "down", "left", or "right".
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
-
+        print(f"data: {data}")
         # Choose a random direction to move in
         possible_moves = ["up", "down", "left", "right"]
         random.shuffle(possible_moves)
         move = possible_moves.pop(0)
 
-        while strategies.safe_move(move, data) is not True and len(possible_moves) > 0 :
+        while strategies.safe_move(move, data) is not True and possible_moves:
             # remove tried choices from the list
             move = possible_moves.pop(0)
-            
 
         print(f"MOVE: {move}")
         return {"move": move}
@@ -70,13 +70,15 @@ class Battlesnake(object):
 
         print("END")
         return "ok"
-        
+
 
 if __name__ == "__main__":
     server = Battlesnake()
     cherrypy.config.update({"server.socket_host": "0.0.0.0"})
     cherrypy.config.update(
-        {"server.socket_port": int(os.environ.get("PORT", "8080")),}
+        {
+            "server.socket_port": int(os.environ.get("PORT", "8080")),
+        }
     )
     print("Starting Battlesnake Server...")
     cherrypy.quickstart(server)
