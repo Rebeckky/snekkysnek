@@ -92,10 +92,11 @@ def avoid_head_to_head_collision(next_move, current_snakes):
     # with myself
     my_snake = {}
     my_length = 0
-    for i in range(len(snakes) - 1):
-        if snakes[i]["id"] == global_variables.MY_SNAKE_ID:
+    for i, snake in enumerate(snakes):
+        if snake["id"] == global_variables.MY_SNAKE_ID:
             my_snake = snakes.pop(i)
             my_length = my_snake["length"]
+            print(f"removed {snake['name']} from list for head-head detection")
             break
 
     result = True
@@ -108,16 +109,20 @@ def avoid_head_to_head_collision(next_move, current_snakes):
         snake_head_y_inc = {"x": snake_head["x"], "y": snake_head["y"] + 1}
         snake_head_y_dec = {"x": snake_head["x"], "y": snake_head["y"] - 1}
 
-        if (
-            next_move == snake_head_x_inc
-            or next_move == snake_head_x_dec
-            or next_move == snake_head_y_inc
-            or next_move == snake_head_y_dec
-        ):
-
+        if next_move == snake_head_x_inc:
             result = is_my_snake_bigger(my_length, snake_length)
-            print(f"avoid_head_collision: {result}, with snake: {snake_head}")
-    print("avoid_head_collision")
+            print(f"right, result: {result}")
+        elif next_move == snake_head_x_dec:
+            result = is_my_snake_bigger(my_length, snake_length)
+            print(f"left, result: {result}")
+        elif next_move == snake_head_y_inc:
+            result = is_my_snake_bigger(my_length, snake_length)
+            print(f"up, result: {result}")
+        elif next_move == snake_head_y_dec:
+            result = is_my_snake_bigger(my_length, snake_length)
+            print(f"down, result: {result}")
+        else:
+            print("no possible hth collision")
     return result
 
 
